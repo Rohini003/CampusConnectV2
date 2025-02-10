@@ -156,81 +156,6 @@ if __name__ == '__main__':
 def index():
     return render_template("index.html")
 
-
-
-# @app.route("/register", methods=["GET", "POST"])
-# def register():
-#     # If user reached route via POST
-#     if request.method == "POST":
-#         # Getting info
-#         name = request.form.get("name")
-#         email = request.form.get("email")
-#         password = request.form.get("password")
-#         confirmation = request.form.get("confirmation")
-
-#         # Check whether password is strong enough
-#         x = password_check(password)
-#         if x is False:
-#             return apology("Please satisfy password requirements")
-
-#         # Checking if password equal to confirmation
-#         if not password == confirmation:
-#             return apology("Password and confirmation didnt matched")
-
-#         # Generating hash to store in database
-#         hash = generate_password_hash(password)
-
-#         # Storing in database
-#         db.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, hash])
-#         # print("tables interior: ")
-#         db.execute("SELECT * FROM users")
-#         # print(f"fetch of register", db.fetchall())
-
-#         # Set the sender and recipient email addresses
-#         sender_email = 'CampusConnect.counsellor@gmail.com'
-#         sender_password = 'ncmltbtaqqkhtmsv'
-#         recipient_email = 'abcd007@gmail.com'
-#         visit_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-#         # Send me email
-#         send_notification_email(sender_email, sender_password, recipient_email, name, email, visit_time)
-
-#         return redirect("/login")
-    
-#     # If user reached route via GET
-#     else:
-#         return render_template("register.html")
-
-
-
-# @app.route("/login", methods=["GET", "POST"])
-# def login():
-#     # If user reached route via POST
-#     if request.method == "POST":
-#         # Forget any previous user
-
-#         # Getting info
-#         name = request.form.get("name")
-#         password = request.form.get("password")
-
-#         # Validating info with database
-#         db.execute("SELECT * FROM users")
-#         rows = db.fetchall()
-#         # print(f"fetch of login: {rows}")
-#         for row in rows:
-#             if row[1] == name:
-#                 # Remember which user has logged in
-#                 #session["id"] = rows[0][0]
-#                 print("successfull login")
-#                 return redirect("/details")
-#         return apology("Please register if you havent")
-
-#     # If user reached route via GET
-#     else:
-#         return render_template("login.html")
-
-
-
 @app.route("/details", methods=["GET", "POST"])
 def details():
     # If user reached route via POST
@@ -254,14 +179,6 @@ def details():
         if cet=="" and jee=="":
             return apology("Atleast one marks are required")
         
-        if location == "enter":
-            # Find and use API
-            print(f"Users entered location is: {entered_location}")
-        elif location == "track":
-            userlocation = user_tracked_location()
-            # print(f"Your current location is: {userlocation}")
-        else:
-            return apology("please provide location") 
 
         # Scanning QR code
         '''
