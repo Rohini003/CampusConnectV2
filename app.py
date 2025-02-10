@@ -1,3 +1,4 @@
+# app.py
 import os
 import sqlite3
 # import cv2 as cv
@@ -28,9 +29,8 @@ def after_request(response):
     return response
 
 
-
 # Connecting to database
-conn = sqlite3.connect("database.db", timeout = 50, check_same_thread=False)
+conn = sqlite3.connect("database.db", timeout=50, check_same_thread=False)
 db = conn.cursor()
 try:
     sqliteConnection = sqlite3.connect("database.db")
@@ -42,7 +42,6 @@ try:
     print("SQlite database version is: ", record)
 except:
     print(f"Error while connecting to sqlite")
-
 
 
 # Database one time generating table
@@ -63,25 +62,25 @@ Seat_Type VARCHAR(100)
 '''
 
 
-
 # Loading colleges info in SQLite table
 """
 with open('cetcell 2020.csv','r') as fin:
     dr = csv.DictReader(fin)
-    to_db = [(i['Sr.No.'], i['Merit (Score)'], i['Choice Code'], i['Institute'], i['Course Name'], i['Exam (JEE/MHT  CET)'], i['Type'], i['Seat Type']) for i in dr]
+    to_db = [(i['Sr.No.'], i['Merit (Score)'], i['Choice Code'], i['Institute'],
+              i['Course Name'], i['Exam (JEE/MHT  CET)'], i['Type'], i['Seat Type']) for i in dr]
 db.executemany("INSERT INTO colleges (SrNo, Merit_Score, Choice_Code, Institute, Course_Name, Exam_JEEMHT__CET, Type, Seat_Type) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", to_db)
 conn.commit()
 print("clg insertion successfull")
 """
 
-#commenting feature
+# commenting feature
 # Database table creation (Run once)
 '''
 db.execute("""
 CREATE TABLE IF NOT EXISTS users(
-id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-name TEXT, 
-email TEXT, 
+id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+name TEXT,
+email TEXT,
 password TEXT
 );""")
 
@@ -100,9 +99,38 @@ text TEXT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 );""")
+
+
+
 '''
 
-#Routes for commenting
+
+db.execute("DROP TABLE IF EXISTS answers")
+db.execute("DROP TABLE IF EXISTS questions")
+conn.commit()
+
+db.execute("""
+CREATE TABLE IF NOT EXISTS questions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    question TEXT NOT NULL,
+    created_at DATETIME DEFAULT (datetime('now', 'localtime')),
+    upvotes INTEGER DEFAULT 0
+)
+""")
+
+db.execute("""
+CREATE TABLE IF NOT EXISTS answers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    created_at DATETIME DEFAULT (datetime('now', 'localtime')),
+    upvotes INTEGER DEFAULT 0,
+    FOREIGN KEY (question_id) REFERENCES questions(id)
+)
+""")
+# Routes for commenting
 
 # Function to add comment
 '''
@@ -110,7 +138,7 @@ FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 def add_comment():
     data = request.get_json()
     text = data['text']
-    
+
     db.execute("INSERT INTO comments (text) VALUES (?)", (text,))
     conn.commit()
     return jsonify({"message": "Comment added!"})
@@ -121,8 +149,9 @@ def add_reply():
     data = request.get_json()
     comment_id = data['comment_id']
     text = data['text']
-    
-    db.execute("INSERT INTO replies (comment_id, text) VALUES (?, ?)", (comment_id, text))
+
+    db.execute("INSERT INTO replies (comment_id, text) VALUES (?, ?)",
+               (comment_id, text))
     conn.commit()
     return jsonify({"message": "Reply added!"})
 
@@ -143,7 +172,7 @@ def get_comments():
             "created_at": created_at,
             "replies": [{"text": reply[0]} for reply in replies]
         })
-    
+
     return jsonify({"comments": response})
 
 if __name__ == '__main__':
@@ -152,22 +181,27 @@ if __name__ == '__main__':
 '''
 # APP ROUTES
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 @app.route("/details", methods=["GET", "POST"])
 def details():
     # If user reached route via POST
     if request.method == "POST":
         # Getting user info
-        cet = request.form.get("cet") # Getting input via scanning QR of marklist
+        # Getting input via scanning QR of marklist
+        cet = request.form.get("cet")
         jee = request.form.get("jee")
-        location = request.form.get("location") # Location tracking using ip address
+        # Location tracking using ip address
+        location = request.form.get("location")
         entered_location = request.form.get("entered_location")
         ce = request.form.get("Computer Engineering")
         it = request.form.get("Information Technology")
-        cse = request.form.get("Computer Science and Engineering(Data Science)")
+        cse = request.form.get(
+            "Computer Science and Engineering(Data Science)")
         ai = request.form.get("Artificial Intelligence and Data Science")
         mech = request.form.get("Mechanical Engineering")
         ee = request.form.get("Electronics Engineering")
@@ -176,9 +210,8 @@ def details():
         ae = request.form.get("Automobile Engineering")
 
         # Basic errorhandeling
-        if cet=="" and jee=="":
+        if cet == "" and jee == "":
             return apology("Atleast one marks are required")
-        
 
         # Scanning QR code
         '''
@@ -214,23 +247,25 @@ def details():
         for item in ffli:
             params.append(item)
         # print(f"params: {params}")
-        
+
         # Database query for colleges in which admission is possible due to jee
-        db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='JEE' AND Course_Name IN (%s)"%', '.join('?' for a in ffli), params)
+        db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='JEE' AND Course_Name IN (%s)" %
+                   ', '.join('?' for a in ffli), params)
         global clg_jee_list
         clg_jee_list = db.fetchall()
         # print(f"clg_jee_list: {clg_jee_list}")
 
         params[0] = cet
-        #print(f"params: {params}")
+        # print(f"params: {params}")
         # Database query for colleges in which admission is possible due to mht-cet
-        db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='MHT CET' AND Course_Name IN (%s)"%', '.join('?' for a in ffli), params)
+        db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='MHT CET' AND Course_Name IN (%s)" %
+                   ', '.join('?' for a in ffli), params)
         global clg_cet_list
         clg_cet_list = db.fetchall()
         # print(f"clg_cet_list: {clg_cet_list}")
 
         # Merging both jee and mht-cet lists
-        global clg_list 
+        global clg_list
         clg_list = clg_jee_list + clg_cet_list
         # print(f"clg_list: {clg_list}")
 
@@ -253,21 +288,99 @@ def details():
         return render_template("details.html")
 
 
-
 @app.route("/suggestions")
 def suggestions():
     # Rendering suggestions along with clg list generated in runtime
-    return render_template("suggestions.html", clg_list = clg_list)
+    return render_template("suggestions.html", clg_list=clg_list)
 
 
-
-@app.route("/faqs")
+@app.route("/faqs", methods=["GET", "POST"])
 def faqs():
-    return render_template("faqs.html")
+    if request.method == "POST":
+        if "question" in request.form:
+            name = request.form.get("name")
+            question = request.form.get("question")
+            if not name or not question:
+                flash("Name and question are required!")
+                return redirect("/faqs")
+            db.execute("INSERT INTO questions (name, question) VALUES (?, ?)",
+                       (name, question))
+            conn.commit()
+
+        elif "answer" in request.form:
+            name = request.form.get("name")
+            answer = request.form.get("answer")
+            question_id = request.form.get("question_id")
+            if not name or not answer:
+                flash("Name and answer are required!")
+                return redirect("/faqs")
+            db.execute("INSERT INTO answers (question_id, name, answer) VALUES (?, ?, ?)",
+                       (question_id, name, answer))
+            conn.commit()
+        return redirect("/faqs")
+
+    db.execute("""
+        SELECT 
+            q.id, q.name, q.question, q.created_at, q.upvotes,
+            a.name as answerer_name, a.answer, a.created_at as answer_date,
+            a.id as answer_id, a.upvotes as answer_upvotes
+        FROM questions q
+        LEFT JOIN answers a ON q.id = a.question_id
+        ORDER BY q.created_at DESC
+    """)
+    qa_pairs = db.fetchall()
+    return render_template("faqs.html", qa_pairs=qa_pairs)
 
 
+@app.route("/delete_question/<int:question_id>", methods=["POST"])
+def delete_question(question_id):
+    name = request.form.get("name")
+    db.execute("SELECT name FROM questions WHERE id = ?", (question_id,))
+    question = db.fetchone()
+
+    if question and question[0] == name:
+        db.execute("DELETE FROM answers WHERE question_id = ?", (question_id,))
+        db.execute("DELETE FROM questions WHERE id = ?", (question_id,))
+        conn.commit()
+        flash("Question deleted successfully!")
+    else:
+        flash("You can only delete your own questions!")
+    return redirect("/faqs")
+
+
+@app.route("/delete_answer/<int:answer_id>", methods=["POST"])
+def delete_answer(answer_id):
+    name = request.form.get("name")
+    db.execute("SELECT name FROM answers WHERE id = ?", (answer_id,))
+    answer = db.fetchone()
+
+    if answer and answer[0] == name:
+        db.execute("DELETE FROM answers WHERE id = ?", (answer_id,))
+        conn.commit()
+        flash("Answer deleted successfully!")
+    else:
+        flash("You can only delete your own answers!")
+    return redirect("/faqs")
+
+
+@app.route("/upvote", methods=["POST"])
+def upvote():
+    item_type = request.form.get("type")
+    item_id = request.form.get("id")
+
+    if item_type == "question":
+        db.execute(
+            "UPDATE questions SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
+    elif item_type == "answer":
+        db.execute(
+            "UPDATE answers SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
+
+    conn.commit()
+    return redirect("/faqs")
 
 # Error handlers
+
+
 def errorhandler(e):
     # Basic error handeling
     if not isinstance(e, HTTPException):
@@ -275,15 +388,13 @@ def errorhandler(e):
     return apology(e.name, e.code)
 
 
-
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 
-
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug=True)
 
 
 conn.close()
