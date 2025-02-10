@@ -1,11 +1,9 @@
 {% extends "layout.html" %}
 
-{% block title %}
-FAQs
-{% endblock %}
+{% block title %}FAQs{% endblock %}
 
 {% block main %}
-<div class="cont my-5 poppins">
+<div class="container py-5">
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -21,104 +19,110 @@ FAQs
     {% endwith %}
 
     <!-- Question Form -->
-    <div class="col-md-8 mx-auto mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Ask a Question</h5>
-                <form action="{{ url_for('faqs') }}" method="post">
-                    <div class="form-group">
-                        <input type="text" class="form-control mb-2" name="name" placeholder="Your Name" required>
-                        <textarea class="form-control mb-2" name="question" rows="3" placeholder="Your Question" required></textarea>
-                        <button type="submit" class="btn btn-primary" name="question" value="1">Submit Question</button>
-                    </div>
-                </form>
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h4 class="card-title poppins mb-4">Ask a Question</h4>
+                    <form action="{{ url_for('faqs') }}" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-lg mb-3" name="name" placeholder="Your Name" required>
+                            <textarea class="form-control mb-3" name="question" rows="3" placeholder="Type your question here..." required></textarea>
+                            <button type="submit" class="btn btn-primary px-4" name="question" value="1">Post Question</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Display Questions and Answers -->
-    <div class="col-md-8 mx-auto">
-        {% for qa in qa_pairs %}
-            <div class="card mb-4">
-                <div class="card-body">
-                    <!-- Question with Upvote and Delete -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5 class="card-title">Q: {{ qa[2] }}</h5>
-                                <p class="card-text">
-                                    <small class="text-muted">Asked by {{ qa[1] }} on {{ qa[3] }}</small>
-                                </p>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <!-- Upvote Question -->
-                                <form action="{{ url_for('upvote') }}" method="post" class="mr-2">
-                                    <input type="hidden" name="type" value="question">
-                                    <input type="hidden" name="id" value="{{ qa[0] }}">
-                                    <button type="submit" class="btn btn-outline-success btn-sm">
-                                        👍 {{ qa[4] or 0 }}
-                                    </button>
-                                </form>
-                                
-                                <!-- Delete Question -->
-                                <form action="{{ url_for('delete_question', question_id=qa[0]) }}" method="post">
-                                    <input type="hidden" name="name" value="{{ qa[1] }}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" 
-                                            onclick="return confirm('Are you sure you want to delete this question?')">
-                                        🗑️
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Answers with Upvote and Delete -->
-                    {% if qa[5] %}
-                        <div class="ml-4 mb-3 p-3 bg-light rounded">
+    <!-- Questions and Answers -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {% for qa in qa_pairs %}
+                <div class="card shadow mb-4">
+                    <div class="card-body p-4">
+                        <!-- Question -->
+                        <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="card-text">A: {{ qa[6] }}</p>
-                                    <p class="card-text">
-                                        <small class="text-muted">Answered by {{ qa[5] }} on {{ qa[7] }}</small>
+                                    <h5 class="card-title poppins">{{ qa[2] }}</h5>
+                                    <p class="text-muted">
+                                        <small>Asked by {{ qa[1] }} on {{ qa[3] }}</small>
                                     </p>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <!-- Upvote Answer -->
-                                    <form action="{{ url_for('upvote') }}" method="post" class="mr-2">
-                                        <input type="hidden" name="type" value="answer">
-                                        <input type="hidden" name="id" value="{{ qa[8] }}">
-                                        <button type="submit" class="btn btn-outline-success btn-sm">
-                                            👍 {{ qa[9] or 0 }}
+                                <div class="d-flex">
+                                    <!-- Upvote Question -->
+                                    <form action="{{ url_for('toggle_upvote') }}" method="post" class="mr-2">
+                                        <input type="hidden" name="type" value="question">
+                                        <input type="hidden" name="id" value="{{ qa[0] }}">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm" 
+                                                {% if qa[0]|string + '_question' in session.get('upvoted', []) %}
+                                                style="background-color: #007bff; color: white;"
+                                                {% endif %}>
+                                            <i class="fas fa-thumbs-up"></i> {{ qa[4] or 0 }}
                                         </button>
                                     </form>
-
-                                    <!-- Delete Answer -->
-                                    <form action="{{ url_for('delete_answer', answer_id=qa[8]) }}" method="post">
-                                        <input type="hidden" name="name" value="{{ qa[5] }}">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                onclick="return confirm('Are you sure you want to delete this answer?')">
-                                            🗑️
+                                    
+                                    <!-- Delete Question -->
+                                    <form action="{{ url_for('delete_question', question_id=qa[0]) }}" method="post">
+                                        <input type="hidden" name="name" value="{{ qa[1] }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
 
-                    <!-- Answer Form below each question -->
-                    <div class="mt-3">
-                        <form action="{{ url_for('faqs') }}" method="post">
-                            <div class="form-group">
-                                <input type="text" class="form-control mb-2" name="name" placeholder="Your Name" required>
-                                <input type="hidden" name="question_id" value="{{ qa[0] }}">
-                                <textarea class="form-control mb-2" name="answer" rows="2" placeholder="Your Answer" required></textarea>
-                                <button type="submit" class="btn btn-sm btn-primary" name="answer" value="1">Submit Answer</button>
+                        <!-- Answers -->
+                        {% if qa[5] %}
+                            <div class="ml-4 mb-4 p-3 bg-light rounded">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <p class="mb-2">{{ qa[6] }}</p>
+                                        <small class="text-muted">Answered by {{ qa[5] }} on {{ qa[7] }}</small>
+                                    </div>
+                                    <div class="d-flex">
+                                        <!-- Upvote Answer -->
+                                        <form action="{{ url_for('toggle_upvote') }}" method="post" class="mr-2">
+                                            <input type="hidden" name="type" value="answer">
+                                            <input type="hidden" name="id" value="{{ qa[8] }}">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm"
+                                                    {% if qa[8]|string + '_answer' in session.get('upvoted', []) %}
+                                                    style="background-color: #007bff; color: white;"
+                                                    {% endif %}>
+                                                <i class="fas fa-thumbs-up"></i> {{ qa[9] or 0 }}
+                                            </button>
+                                        </form>
+
+                                        <!-- Delete Answer -->
+                                        <form action="{{ url_for('delete_answer', answer_id=qa[8]) }}" method="post">
+                                            <input type="hidden" name="name" value="{{ qa[5] }}">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
+                        {% endif %}
+
+                        <!-- Answer Form -->
+                        <div class="border-top pt-3">
+                            <form action="{{ url_for('faqs') }}" method="post">
+                                <div class="form-group">
+                                    <input type="text" class="form-control mb-2" name="name" placeholder="Your Name" required>
+                                    <input type="hidden" name="question_id" value="{{ qa[0] }}">
+                                    <textarea class="form-control mb-2" name="answer" rows="2" placeholder="Write your answer..." required></textarea>
+                                    <button type="submit" class="btn btn-primary btn-sm" name="answer" value="1">Post Answer</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

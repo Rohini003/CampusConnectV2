@@ -18,9 +18,11 @@ from helpers import apology, login_required, user_tracked_location, input_locati
 # Configure application
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-
+app.secret_key = os.urandom(24)
 
 # Ensure responses aren't cached
+
+
 @app.after_request
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -363,21 +365,40 @@ def delete_answer(answer_id):
     return redirect("/faqs")
 
 
-@app.route("/upvote", methods=["POST"])
-def upvote():
+@app.route("/toggle_upvote", methods=["POST"])
+def toggle_upvote():
     item_type = request.form.get("type")
     item_id = request.form.get("id")
 
-    if item_type == "question":
-        db.execute(
-            "UPDATE questions SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
-    elif item_type == "answer":
-        db.execute(
-            "UPDATE answers SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
+    # Initialize upvoted items in session if not exists
+    if 'upvoted' not in session:
+        session['upvoted'] = []
 
+    # Create unique identifier for the upvoted item
+    item_identifier = f"{item_id}_{item_type}"
+
+    if item_identifier in session['upvoted']:
+        # Remove upvote
+        session['upvoted'].remove(item_identifier)
+        if item_type == "question":
+            db.execute(
+                "UPDATE questions SET upvotes = upvotes - 1 WHERE id = ?", (item_id,))
+        elif item_type == "answer":
+            db.execute(
+                "UPDATE answers SET upvotes = upvotes - 1 WHERE id = ?", (item_id,))
+    else:
+        # Add upvote
+        session['upvoted'].append(item_identifier)
+        if item_type == "question":
+            db.execute(
+                "UPDATE questions SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
+        elif item_type == "answer":
+            db.execute(
+                "UPDATE answers SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
+
+    session.modified = True
     conn.commit()
     return redirect("/faqs")
-
 # Error handlers
 
 
