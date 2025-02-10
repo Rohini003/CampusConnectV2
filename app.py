@@ -74,8 +74,82 @@ conn.commit()
 print("clg insertion successfull")
 """
 
+#commenting feature
+# Database table creation (Run once)
+'''
+db.execute("""
+CREATE TABLE IF NOT EXISTS users(
+id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+name TEXT, 
+email TEXT, 
+password TEXT
+);""")
 
+db.execute("""
+CREATE TABLE IF NOT EXISTS comments(
+id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+text TEXT NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);""")
 
+db.execute("""
+CREATE TABLE IF NOT EXISTS replies(
+id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+comment_id INTEGER NOT NULL,
+text TEXT NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
+);""")
+'''
+
+#Routes for commenting
+
+# Function to add comment
+'''
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    data = request.get_json()
+    text = data['text']
+    
+    db.execute("INSERT INTO comments (text) VALUES (?)", (text,))
+    conn.commit()
+    return jsonify({"message": "Comment added!"})
+
+# Function to add reply
+@app.route('/add_reply', methods=['POST'])
+def add_reply():
+    data = request.get_json()
+    comment_id = data['comment_id']
+    text = data['text']
+    
+    db.execute("INSERT INTO replies (comment_id, text) VALUES (?, ?)", (comment_id, text))
+    conn.commit()
+    return jsonify({"message": "Reply added!"})
+
+# Function to get comments and replies
+@app.route('/get_comments', methods=['GET'])
+def get_comments():
+    db.execute("SELECT * FROM comments")
+    comments = db.fetchall()
+
+    response = []
+    for comment in comments:
+        comment_id, text, created_at = comment
+        db.execute("SELECT text FROM replies WHERE comment_id=?", (comment_id,))
+        replies = db.fetchall()
+        response.append({
+            "id": comment_id,
+            "text": text,
+            "created_at": created_at,
+            "replies": [{"text": reply[0]} for reply in replies]
+        })
+    
+    return jsonify({"comments": response})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+'''
 # APP ROUTES
 
 @app.route("/")

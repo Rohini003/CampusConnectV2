@@ -1,13 +1,13 @@
 /*footer*/
-.col_white_amrc { color:#FFF;}
+.col_white_amrc { color:#2e2d2d;}
 footer { width:100%; background-color:#263238; min-height:250px; padding:10px 0px 25px 0px ;}
 .pt2 { padding-top:40px ; margin-bottom:20px ;}
-footer p { font-size:13px; color:#CCC; padding-bottom:0px; margin-bottom:8px;}
+footer p { font-size:13px; color:#1f1e1e; padding-bottom:0px; margin-bottom:8px;}
 .mb10 { padding-bottom:15px ;}
 .footer_ul_amrc { margin:0px ; list-style-type:none ; font-size:14px; padding:0px 0px 10px 0px ; }
 .footer_ul_amrc li {padding:0px 0px 5px 0px;}
-.footer_ul_amrc li a{ color:#CCC;}
-.footer_ul_amrc li a:hover{ color:#fff; text-decoration:none;}
+.footer_ul_amrc li a{ color:#252424;}
+.footer_ul_amrc li a:hover{ color:#918c8c; text-decoration:none;}
 .fleft { float:left;}
 .padding-right { padding-right:10px; }
 
@@ -735,7 +735,7 @@ input[type='checkbox'] {
 /*    02. Header     */
 /*********************/
 .header {
-	background-color:#ff647e;
+	background-color:#f5f2f2;
 }
 
 .header .header-content {
@@ -750,14 +750,14 @@ input[type='checkbox'] {
 
 .header h1 {
 	margin-bottom: 1rem;
-	color: #fff;
+	color: #1d1c1c;
 	font-size: 2.5rem;
 	line-height: 3rem;
 }
 
 .header .p-large {
 	margin-bottom: 2rem;
-	color: #f3f7fd;
+	color: #4d4d4e;
 }
 
 .header .btn-solid-lg {
@@ -1038,7 +1038,7 @@ input[type='checkbox'] {
 .footer {
 	padding-top: 3rem;
 	padding-bottom: 0.5rem;
-	background-color:#ff647e;
+	background-color:#e4dddee0;
 }
 
 .footer .footer-col {
@@ -1047,12 +1047,12 @@ input[type='checkbox'] {
 
 .footer h4 {
 	margin-bottom: 0.625rem;
-	color: #fff;
+	color: #d4d1d1;
 }
 
 .footer .list-unstyled,
 .footer p {
-	color: #f3f7fd;
+	color: #323233;
 }
 
 .footer .footer-col.middle .list-unstyled .fas {
@@ -1488,27 +1488,29 @@ input[type='checkbox'] {
 
 
 /* NAVBAR MASTI TRANSPARENT*/
+
 .navbar {
     transition: all 0.4s;
-	background-color:#ff647e;
+	background-color:#d1d0d075;
 }
 
 .navbar .nav-link {
-    color: #fff;
+    color: #424141;
 }
 
 .navbar .nav-link:hover,
 .navbar .nav-link:focus {
-    color: #fff;
+    color: #302e2e;
     text-decoration: none;
 }
 
 .navbar .navbar-brand {
-    color: #fff;
+    color: #332e2e;
 }
 
 
 /* Change navbar styling on scroll */
+
 .navbar.active {
     background:#ff647e;
     box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.6);
@@ -1549,4 +1551,15 @@ input[type='checkbox'] {
     padding: 15px 30px; /* Increase padding for a larger button */
     font-size: 30px; /* Increase font size */
     border-radius: 8px; /* Optional: Make corners more rounded */
+}
+/*  front image */
+.hero-image {
+    display: flex;
+    justify-content: flex-end; /* Moves image to the right */
+    align-items: center; /* Vertically centers the image */
+    width: 55%;
+}
+
+.text-container {
+    text-align: left; /* Ensures text stays left-aligned */
 }
