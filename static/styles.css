@@ -366,8 +366,8 @@ h6 {
 }
 
 .above-heading {
-	color:#ff647e;
-	font: 700 0.75rem/0.875rem "Open Sans", sans-serif;
+	color:#111e3d98;
+	font: 600 1.25rem/1.5rem "Open Sans", sans-serif;
 	text-align: center;
 }
 
@@ -415,15 +415,15 @@ a.white {
 }
 
 .blue {
-	color: #ff647e;
+	color: #919292;
 }
 
 .btn-solid-reg {
 	display: inline-block;
 	padding: 1.1875rem 2.125rem 1.1875rem 2.125rem;
-	border: 0.125rem solid#ff647e;
+	border: 0.125rem solid#838182;
 	border-radius: 2rem;
-	background-color:#ff647e;
+	background-color:#9e9e9e;
 	color: #fff;
 	font: 700 0.875rem/0 "Open Sans", sans-serif;
 	text-decoration: none;
@@ -432,16 +432,16 @@ a.white {
 
 .btn-solid-reg:hover {
 	background-color: transparent;
-	color:#ff647e;
+	color:#4d4b4b;
 	text-decoration: none;
 }
 
 .btn-solid-lg {
 	display: inline-block;
 	padding: 1.375rem 2.625rem 1.375rem 2.625rem;
-	border: 0.125rem solid#ff647e;
+	border: 0.125rem solid#c2bdbe;
 	border-radius: 2rem;
-	background-color:#ff647e;
+	background-color:#ccc2c4;
 	color: #fff;
 	font: 700 0.875rem/0 "Open Sans", sans-serif;
 	text-decoration: none;
@@ -450,24 +450,24 @@ a.white {
 
 .btn-solid-lg:hover {
 	background-color: transparent;
-	color:#ff647e;
+	color:#cec2c4;
 	text-decoration: none;
 }
 
 .btn-outline-reg {
 	display: inline-block;
 	padding: 1.1875rem 2.125rem 1.1875rem 2.125rem;
-	border: 0.125rem solid#ff647e;
+	border: 0.125rem solid#f0e1e4;
 	border-radius: 2rem;
 	background-color: transparent;
-	color:#ff647e;
+	color:#d6ccce;
 	font: 700 0.875rem/0 "Open Sans", sans-serif;
 	text-decoration: none;
 	transition: all 0.2s;
 }
 
 .btn-outline-reg:hover {
-	background-color:#ff647e;
+	background-color:#d8c7ca;
 	color: #fff;
 	text-decoration: none;
 }
@@ -475,17 +475,17 @@ a.white {
 .btn-outline-lg {
 	display: inline-block;
 	padding: 1.375rem 2.625rem 1.375rem 2.625rem;
-	border: 0.125rem solid#ff647e;
+	border: 0.125rem solid#eee3e5;
 	border-radius: 2rem;
 	background-color: transparent;
-	color:#ff647e;
+	color:#e0d6d8;
 	font: 700 0.875rem/0 "Open Sans", sans-serif;
 	text-decoration: none;
 	transition: all 0.2s;
 }
 
 .btn-outline-lg:hover {
-	background-color:#ff647e;
+	background-color:#e2d6d8;
 	color: #fff;
 	text-decoration: none;
 }
@@ -493,17 +493,17 @@ a.white {
 .btn-outline-sm {
 	display: inline-block;
 	padding: 0.875rem 1.5rem 0.875rem 1.5rem;
-	border: 0.125rem solid#ff647e;
+	border: 0.125rem solid#e2d9da;
 	border-radius: 2rem;
 	background-color: transparent;
-	color:#ff647e;
+	color:#dbced1;
 	font: 700 0.875rem/0 "Open Sans", sans-serif;
 	text-decoration: none;
 	transition: all 0.2s;
 }
 
 .btn-outline-sm:hover {
-	background-color:#ff647e;
+	background-color:#cac4c5;
 	color: #fff;
 	text-decoration: none;
 }
@@ -651,9 +651,9 @@ input[type='checkbox'] {
 	display: inline-block;
 	width: 100%;
 	height: 3.125rem;
-	border: 1px solid#ff647e;
+	border: 1px solid#a1a1a1;
 	border-radius: 1.5rem;
-	background-color:#ff647e;
+	background-color:#c7c7c7;
 	color: #fff;
 	font: 700 0.875rem/0 "Open Sans", sans-serif;
 	cursor: pointer;
@@ -662,7 +662,7 @@ input[type='checkbox'] {
 
 .form-control-submit-button:hover {
 	background-color: transparent;
-	color:#ff647e;
+	color:#c7c6c6;
 }
 
 
@@ -696,7 +696,7 @@ input[type='checkbox'] {
 	width: 1rem;
 	height: 1rem;
 	border-radius: 100%;
-	background-color:#ff647e;
+	background-color:#dad4d5;
 	-webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 	animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
@@ -766,7 +766,7 @@ input[type='checkbox'] {
 	margin-left: 0.5rem;
 	border-color: #f3f7fd;
 	background-color: #f3f7fd;
-	color:#ff647e;
+	color:#bdbcbc;
 }
 
 .header .btn-solid-lg:hover {
@@ -781,7 +781,7 @@ input[type='checkbox'] {
 
 .header .btn-outline-lg:hover {
 	background-color: #f3f7fd;
-	color:#ff647e;
+	color:#d1d1d1;
 }
 
 .header-frame {
@@ -876,7 +876,7 @@ input[type='checkbox'] {
 }
 
 .tabs .list-unstyled .fas {
-	color:#ff647e;
+	color:#d1cdce;
 	font-size: 0.5rem;
 	line-height: 1.625rem;
 }
@@ -940,7 +940,7 @@ input[type='checkbox'] {
 
 .cards-2 .card .card-title {
 	margin-bottom: 0.5rem;
-	color:#ff647e;
+	color:#273761;
 	font: 700 1.125rem/1.5rem "Open Sans", sans-serif;
 }
 
@@ -981,7 +981,7 @@ input[type='checkbox'] {
 }
 
 .cards-2 .card .list-unstyled .fas {
-	color:#ff647e;
+	color:#a5a0a1;
 	font-size: 0.875rem;
 	line-height: 1.625rem;
 }
@@ -1014,16 +1014,16 @@ input[type='checkbox'] {
 }
 
 .form .fa-stack .fa-stack-2x {
-	color:#ff647e;
+	color:#636c9ce8;
 	transition: all 0.2s ease;
 }
 
 .form .fa-stack:hover .fa-stack-1x {
-	color:#ff647e;
+	color:#8e8f96;
 }
 
 .form .fa-stack:hover .fa-stack-2x {
-    color: #f3f7fd;
+    color: #c1d2eb;
 }
 
 
@@ -1087,7 +1087,7 @@ input[type='checkbox'] {
 .copyright {
 	padding-top: 1rem;
 	padding-bottom: 0.375rem;
-	background-color:#ff647e;
+	background-color:#dbd3d4;
 	text-align: center;
 }
 
@@ -1458,8 +1458,8 @@ input[type='checkbox'] {
 }
 
 .table-content thead tr {
-	background-color:#ff647e;
-	color: #fff;
+	background-color:#e7e3e3;
+	color: #313030;
 	text-align: left;
 	font-weight: bold;
 }
@@ -1474,12 +1474,12 @@ input[type='checkbox'] {
 }
 
 .table-content tbody tr:last-of-type {
-	border-bottom: 2px solid#ff647e;
+	border-bottom: 2px solid#dad7d8;
 }
 
 .table-content tbody tr.active-row {
 	font-weight: bold;
-	color:#ff647e;
+	color:#d8d8d8;
 }
 
 
@@ -1487,7 +1487,7 @@ input[type='checkbox'] {
 
 
 
-/* NAVBAR MASTI TRANSPARENT*/
+/* NAVBARTRANSPARENT*/
 
 .navbar {
     transition: all 0.4s;
@@ -1512,7 +1512,7 @@ input[type='checkbox'] {
 /* Change navbar styling on scroll */
 
 .navbar.active {
-    background:#ff647e;
+    background:#d8d7d7;
     box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.6);
 }
 
@@ -1534,11 +1534,11 @@ input[type='checkbox'] {
 /* Change navbar styling on small viewports */
 @media (max-width: 991.98px) {
     .navbar {
-        background:#ff647e;
+        background:#e6e5e5;
     }
 
     .navbar .navbar-brand, .navbar .nav-link {
-        color: #fff;
+        color: #363636;
     }
 }
 
