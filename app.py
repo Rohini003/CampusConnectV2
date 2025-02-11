@@ -107,9 +107,9 @@ FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 '''
 
 
-db.execute("DROP TABLE IF EXISTS answers")
-db.execute("DROP TABLE IF EXISTS questions")
-conn.commit()
+# db.execute("DROP TABLE IF EXISTS answers")
+# db.execute("DROP TABLE IF EXISTS questions")
+# conn.commit()
 
 db.execute("""
 CREATE TABLE IF NOT EXISTS questions (
@@ -271,18 +271,6 @@ def details():
         clg_list = clg_jee_list + clg_cet_list
         # print(f"clg_list: {clg_list}")
 
-        '''
-        APLTERNATE CORRECT APPROCH BUT NOT WORKING PROPERLY DUE TO DISCREPANCY IN DATA
-        skips some list items and displays it...........
-
-        for list in clg_list:
-            if (list[5] == "JEE" and list[1] > jee) or (list[5] == "MHT CET" and list[1] > cet):
-                print(list)
-                print()
-                clg_list.remove(list)
-
-        print(f"clg_list : {clg_list}")
-        '''
 
         return redirect("/suggestions")
     # If user reached route via GET
