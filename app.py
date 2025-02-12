@@ -277,6 +277,17 @@ def details():
     else:
         return render_template("details.html")
 
+@app.route('/donation')
+def donation():
+    return render_template('donation.html')
+
+@app.route('/button')
+def button():
+    return render_template('button.html')
+
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
 
 @app.route("/suggestions")
 def suggestions():

@@ -125,4 +125,26 @@
         </div>
     </div>
 </div>
+<script>
+    let isInternalNavigation = false;
+    // Detect navbar clicks and prevent alert
+    document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function () {
+            if (link.hostname === window.location.hostname) {
+                isInternalNavigation = true;
+            }
+        });
+    });
+    
+    window.addEventListener("beforeunload", function (event) {
+        if (isInternalNavigation) {
+            isInternalNavigation = false; // Reset flag
+            return; // Don't show alert for internal navigation
+        }
+    
+        // Show alert only for tab close
+        event.preventDefault();
+        event.returnValue = "Are you sure you want to leave this page?";
+    });
+    </script>
 {% endblock %}

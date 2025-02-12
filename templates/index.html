@@ -36,6 +36,7 @@ Homepage
     </div> <!-- end of header-content -->
 </header> <!-- end of header -->
 
+
 <svg class="header-frame" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
     viewBox="0 0 1920 310">
     <defs>
@@ -214,9 +215,7 @@ Homepage
 
                 <!-- Card-->
                 <div class="card">
-                    <!--<div class="label">
-                        <p class="best-value">Best Value</p>
-                    </div> -->
+                   
                     <div class="card-body">
                         <div class="card-title">THIRD</div>
                         <div class="price"><span class="value">Location</span></div>
@@ -239,9 +238,6 @@ Homepage
                                 <i class="fas fa-check"></i>
                                 <div class="media-body">Suggests Colleges in Thresholded Radius</div>
                             </li>
-                            <!-- <li class="media" id="contact">
-                                <i class="fas fa-times"></i><div class="media-body">Implemented (Coming Soon)</div> -->
-                            <!-- </li> -->
                         </ul>
                     </div>
                 </div> <!-- end of card -->
@@ -309,5 +305,40 @@ Homepage
     </div> <!-- end of container -->
 </div> <!-- end of form -->
 <!-- end of social -->
+
+<!-- <script>
+    window.addEventListener("beforeunload", function (event) {
+    event.preventDefault();
+    event.returnValue = "Are you sure you want to leave this page?";
+});
+
+</script> -->
+
+
+
+<script>
+let isInternalNavigation = false;
+// Detect navbar clicks and prevent alert
+document.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", function () {
+        if (link.hostname === window.location.hostname) {
+            isInternalNavigation = true;
+        }
+    });
+});
+
+window.addEventListener("beforeunload", function (event) {
+    if (isInternalNavigation) {
+        isInternalNavigation = false; // Reset flag
+        return; // Don't show alert for internal navigation
+    }
+
+    // Show alert only for tab close
+    event.preventDefault();
+    event.returnValue = "Are you sure you want to leave this page?";
+});
+</script>
+
+
 
 {% endblock %}
