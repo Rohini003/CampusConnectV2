@@ -45,6 +45,27 @@ try:
 except:
     print(f"Error while connecting to sqlite")
 
+'''
+# Add new column 'location' if it doesn't exist
+db.execute("PRAGMA table_info(colleges)")
+columns = [col[1] for col in db.fetchall()]
+if "location" not in columns:
+    db.execute("ALTER TABLE colleges ADD COLUMN location TEXT")
+    conn.commit()
+    print("Added 'location' column successfully.")
+
+# Extract last word from 'Institute' and update 'location' column
+db.execute("SELECT SrNo, Institute FROM colleges")
+colleges_data = db.fetchall()
+
+for sr_no, institute in colleges_data:
+    if institute:
+        location = institute.strip().split()[-1]  # Get last word
+        db.execute("UPDATE colleges SET location = ? WHERE SrNo = ?", (location, sr_no))
+
+conn.commit()
+print("Updated 'location' column successfully.")
+'''
 
 # Database one time generating table
 '''
@@ -188,22 +209,20 @@ if __name__ == '__main__':
 def index():
     return render_template("index.html")
 
-
 @app.route("/details", methods=["GET", "POST"])
 def details():
     # If user reached route via POST
     if request.method == "POST":
         # Getting user info
-        # Getting input via scanning QR of marklist
         cet = request.form.get("cet")
         jee = request.form.get("jee")
-        # Location tracking using ip address
-        location = request.form.get("location")
-        entered_location = request.form.get("entered_location")
+        
+        # Location tracking using ip address or user input
+        location = request.form.get("location")  # Location from IP or form field
+        entered_location = request.form.get("entered_location")  # Manually entered location by user
         ce = request.form.get("Computer Engineering")
         it = request.form.get("Information Technology")
-        cse = request.form.get(
-            "Computer Science and Engineering(Data Science)")
+        cse = request.form.get("Computer Science and Engineering(Data Science)")
         ai = request.form.get("Artificial Intelligence and Data Science")
         mech = request.form.get("Mechanical Engineering")
         ee = request.form.get("Electronics Engineering")
@@ -211,71 +230,59 @@ def details():
         et = request.form.get("Electronics and Telecommunication\nEngg")
         ae = request.form.get("Automobile Engineering")
 
-        # Basic errorhandeling
+        # Basic error handling
         if cet == "" and jee == "":
-            return apology("Atleast one marks are required")
+            return apology("At least one marks are required")
 
-        # Scanning QR code
-        '''
-        NOT IMPLEMENTED DUE TO PYZBAR ".dll" DISCREPANCY
-        cap = cv.VideoCapture(2)
-
-        while True:
-            _, frame = cap.read()
-
-            barcode = pyzbar.decode(frame)
-            for bdata in barcode:
-                print(f"data  {bdata.data}")
-                Data = barcode.data.decode("utf-8")
-                Type = barcode.type
-                print(f"data  {Data}")
-                print(f"type  {Type}")
-            break
-        '''
-
-        # Database query for best clg suggestions
+        # Collecting selected course options
         li = [ce, it, cse, ai, mech, ee, che, et, ae]
-        fli = []
-        ffli = []
-        for item in li:
-            if item != None:
-                fli.append([item])
+        fli = [item for item in li if item]  # Filter out None or empty values
 
-        for item in range(len(fli)):
-            ffli.append(fli[item][0])
-
-        params = []
-        params.append(jee)
-        for item in ffli:
-            params.append(item)
-        # print(f"params: {params}")
-
-        # Database query for colleges in which admission is possible due to jee
+        # Database query for best college suggestions based on marks
+        params = [jee] + fli
         db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='JEE' AND Course_Name IN (%s)" %
-                   ', '.join('?' for a in ffli), params)
+                   ', '.join('?' for _ in fli), params)
         global clg_jee_list
         clg_jee_list = db.fetchall()
-        # print(f"clg_jee_list: {clg_jee_list}")
 
         params[0] = cet
-        # print(f"params: {params}")
-        # Database query for colleges in which admission is possible due to mht-cet
         db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='MHT CET' AND Course_Name IN (%s)" %
-                   ', '.join('?' for a in ffli), params)
+                   ', '.join('?' for _ in fli), params)
         global clg_cet_list
         clg_cet_list = db.fetchall()
-        # print(f"clg_cet_list: {clg_cet_list}")
 
-        # Merging both jee and mht-cet lists
+        # Merging both JEE and MHT-CET lists
         global clg_list
         clg_list = clg_jee_list + clg_cet_list
-        # print(f"clg_list: {clg_list}")
 
+        # Debugging: Print the raw list of colleges before location filter
+        print("Raw College List (before location filter):", clg_list)
+
+        # Now filter based on the entered location if provided
+        if entered_location:
+            entered_location = entered_location.lower()  # Make the input case-insensitive
+            # Debugging: Print entered location
+            print("Entered Location:", entered_location)
+
+            # Filter the college list based on the 'Location' (last element in tuple)
+            clg_list = [clg for clg in clg_list if entered_location in clg[-1].lower()]  # clg[-1] is the Location
+
+            # Debugging: Print filtered list of colleges
+            print("Filtered College List (after location filter):", clg_list)
+
+        if not clg_list:
+            print("No colleges found based on the entered location.")
 
         return redirect("/suggestions")
+    
     # If user reached route via GET
     else:
         return render_template("details.html")
+
+
+
+    
+
 
 @app.route('/donation')
 def donation():
