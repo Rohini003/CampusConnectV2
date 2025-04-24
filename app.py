@@ -45,6 +45,8 @@ try:
 except:
     print(f"Error while connecting to sqlite")
 
+    
+
 '''
 # Add new column 'location' if it doesn't exist
 db.execute("PRAGMA table_info(colleges)")
