@@ -1,9 +1,11 @@
 # app.py
 import os
 import sqlite3
+
 # import cv2 as cv
 import numpy as nu
 from datetime import datetime
+
 # import pyzbar.pyzbar as pyzbar (Scanning QR Code)
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
@@ -12,7 +14,14 @@ import flask_session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, user_tracked_location, input_location_coords, password_check, send_notification_email
+from helpers import (
+    apology,
+    login_required,
+    user_tracked_location,
+    input_location_coords,
+    password_check,
+    send_notification_email,
+)
 
 
 # Configure application
@@ -45,9 +54,8 @@ try:
 except:
     print(f"Error while connecting to sqlite")
 
-    
 
-'''
+"""
 # Add new column 'location' if it doesn't exist
 db.execute("PRAGMA table_info(colleges)")
 columns = [col[1] for col in db.fetchall()]
@@ -67,7 +75,7 @@ for sr_no, institute in colleges_data:
 
 conn.commit()
 print("Updated 'location' column successfully.")
-'''
+"""
 
 # Database one time generating table
 '''
@@ -158,7 +166,7 @@ CREATE TABLE IF NOT EXISTS answers (
 # Routes for commenting
 
 # Function to add comment
-'''
+"""
 @app.route('/add_comment', methods=['POST'])
 def add_comment():
     data = request.get_json()
@@ -203,13 +211,14 @@ def get_comments():
 if __name__ == '__main__':
     app.run(debug=True)
 
-'''
+"""
 # APP ROUTES
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 @app.route("/details", methods=["GET", "POST"])
 def details():
@@ -218,13 +227,17 @@ def details():
         # Getting user info
         cet = request.form.get("cet")
         jee = request.form.get("jee")
-        
+
         # Location tracking using ip address or user input
-        location = request.form.get("location")  # Location from IP or form field
-        entered_location = request.form.get("entered_location")  # Manually entered location by user
+        # Location from IP or form field
+        location = request.form.get("location")
+        entered_location = request.form.get(
+            "entered_location"
+        )  # Manually entered location by user
         ce = request.form.get("Computer Engineering")
         it = request.form.get("Information Technology")
-        cse = request.form.get("Computer Science and Engineering(Data Science)")
+        cse = request.form.get(
+            "Computer Science and Engineering(Data Science)")
         ai = request.form.get("Artificial Intelligence and Data Science")
         mech = request.form.get("Mechanical Engineering")
         ee = request.form.get("Electronics Engineering")
@@ -242,14 +255,20 @@ def details():
 
         # Database query for best college suggestions based on marks
         params = [jee] + fli
-        db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='JEE' AND Course_Name IN (%s)" %
-                   ', '.join('?' for _ in fli), params)
+        db.execute(
+            "SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='JEE' AND Course_Name IN (%s)"
+            % ", ".join("?" for _ in fli),
+            params,
+        )
         global clg_jee_list
         clg_jee_list = db.fetchall()
 
         params[0] = cet
-        db.execute("SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='MHT CET' AND Course_Name IN (%s)" %
-                   ', '.join('?' for _ in fli), params)
+        db.execute(
+            "SELECT * FROM colleges WHERE Merit_Score<=? AND Exam_JEEMHT__CET='MHT CET' AND Course_Name IN (%s)"
+            % ", ".join("?" for _ in fli),
+            params,
+        )
         global clg_cet_list
         clg_cet_list = db.fetchall()
 
@@ -262,12 +281,16 @@ def details():
 
         # Now filter based on the entered location if provided
         if entered_location:
-            entered_location = entered_location.lower()  # Make the input case-insensitive
+            entered_location = (
+                entered_location.lower()
+            )  # Make the input case-insensitive
             # Debugging: Print entered location
             print("Entered Location:", entered_location)
 
             # Filter the college list based on the 'Location' (last element in tuple)
-            clg_list = [clg for clg in clg_list if entered_location in clg[-1].lower()]  # clg[-1] is the Location
+            clg_list = [
+                clg for clg in clg_list if entered_location in clg[-1].lower()
+            ]  # clg[-1] is the Location
 
             # Debugging: Print filtered list of colleges
             print("Filtered College List (after location filter):", clg_list)
@@ -276,27 +299,25 @@ def details():
             print("No colleges found based on the entered location.")
 
         return redirect("/suggestions")
-    
+
     # If user reached route via GET
     else:
         return render_template("details.html")
 
 
-
-    
-
-
-@app.route('/donation')
+@app.route("/donation")
 def donation():
-    return render_template('donation.html')
+    return render_template("donation.html")
 
-@app.route('/button')
+
+@app.route("/button")
 def button():
-    return render_template('button.html')
+    return render_template("button.html")
 
 
 # if __name__ == '__main__':
 #     app.run(debug=True)
+
 
 @app.route("/suggestions")
 def suggestions():
@@ -313,8 +334,9 @@ def faqs():
             if not name or not question:
                 flash("Name and question are required!")
                 return redirect("/faqs")
-            db.execute("INSERT INTO questions (name, question) VALUES (?, ?)",
-                       (name, question))
+            db.execute(
+                "INSERT INTO questions (name, question) VALUES (?, ?)", (name, question)
+            )
             conn.commit()
 
         elif "answer" in request.form:
@@ -324,8 +346,10 @@ def faqs():
             if not name or not answer:
                 flash("Name and answer are required!")
                 return redirect("/faqs")
-            db.execute("INSERT INTO answers (question_id, name, answer) VALUES (?, ?, ?)",
-                       (question_id, name, answer))
+            db.execute(
+                "INSERT INTO answers (question_id, name, answer) VALUES (?, ?, ?)",
+                (question_id, name, answer),
+            )
             conn.commit()
         return redirect("/faqs")
 
@@ -379,34 +403,44 @@ def toggle_upvote():
     item_id = request.form.get("id")
 
     # Initialize upvoted items in session if not exists
-    if 'upvoted' not in session:
-        session['upvoted'] = []
+    if "upvoted" not in session:
+        session["upvoted"] = []
 
     # Create unique identifier for the upvoted item
     item_identifier = f"{item_id}_{item_type}"
 
-    if item_identifier in session['upvoted']:
+    if item_identifier in session["upvoted"]:
         # Remove upvote
-        session['upvoted'].remove(item_identifier)
+        session["upvoted"].remove(item_identifier)
         if item_type == "question":
             db.execute(
-                "UPDATE questions SET upvotes = upvotes - 1 WHERE id = ?", (item_id,))
+                "UPDATE questions SET upvotes = upvotes - 1 WHERE id = ?", (
+                    item_id,)
+            )
         elif item_type == "answer":
             db.execute(
-                "UPDATE answers SET upvotes = upvotes - 1 WHERE id = ?", (item_id,))
+                "UPDATE answers SET upvotes = upvotes - 1 WHERE id = ?", (
+                    item_id,)
+            )
     else:
         # Add upvote
-        session['upvoted'].append(item_identifier)
+        session["upvoted"].append(item_identifier)
         if item_type == "question":
             db.execute(
-                "UPDATE questions SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
+                "UPDATE questions SET upvotes = upvotes + 1 WHERE id = ?", (
+                    item_id,)
+            )
         elif item_type == "answer":
             db.execute(
-                "UPDATE answers SET upvotes = upvotes + 1 WHERE id = ?", (item_id,))
+                "UPDATE answers SET upvotes = upvotes + 1 WHERE id = ?", (
+                    item_id,)
+            )
 
     session.modified = True
     conn.commit()
     return redirect("/faqs")
+
+
 # Error handlers
 
 
@@ -422,8 +456,11 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, port=port)
     app.run(debug=True)
 
 
 conn.close()
+
